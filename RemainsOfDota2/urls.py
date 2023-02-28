@@ -1,10 +1,10 @@
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, include
+
 import teams.views as views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('hello/',views.hello),
-    path('player/',views.PlayerView.as_view()),
-    path('player/<int:pk>/',views.PlayerDetailView.as_view()),
+    path('hello/', views.hello),
+    path('player/', include('teams.urls'))
 ]
