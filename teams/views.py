@@ -10,6 +10,7 @@ from django.forms.models import model_to_dict
 
 from RemainsOfDota2 import settings
 from teams.models import Player
+from teams.serializers import PlayerSerializer
 
 
 def hello(request):
@@ -31,16 +32,18 @@ class PlayerView(ListView):
         page_number=request.GET.get("page")
         page_obj=paginator.get_page(page_number)
 
-        players=[]
-        for player in page_obj:
-            players.append({
-                'id': player.id,
-                'nickname': player.nickname,
-                'team': str(player.team.name),
-                'status': player.status
-            })
+        # players=[]
+        # for player in page_obj:
+        #     players.append({
+        #         'id': player.id,
+        #         'nickname': player.nickname,
+        #         'team': player.team.name,
+        #         'status': player.status
+        #     })
+
+       # list(map(lambda x: setattr(x,"team",x.team.name if x.team else None),page_obj))
         response = {
-            "items":players,
+            "items":PlayerSerializer(page_obj,many=True).data,
             "num_pages":paginator.num_pages,
             "total":paginator.count
         }
