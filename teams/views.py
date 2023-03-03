@@ -10,7 +10,7 @@ from django.forms.models import model_to_dict
 
 from RemainsOfDota2 import settings
 from teams.models import Player
-from teams.serializers import PlayerSerializer
+from teams.serializers import PlayerSerializer, PlayerDetailSerializer
 
 
 def hello(request):
@@ -57,10 +57,7 @@ class PlayerDetailView(DetailView):
     def get(self, request, *args, **kwargs):
         player = self.get_object()
 
-        return JsonResponse({
-            'id': player.id,
-            'nickname': player.nickname
-        }, safe=False)
+        return JsonResponse(PlayerDetailSerializer(player).data)
 
 
 @method_decorator(csrf_exempt, name='dispatch')
