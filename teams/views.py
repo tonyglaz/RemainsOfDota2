@@ -10,7 +10,7 @@ from django.forms.models import model_to_dict
 
 from RemainsOfDota2 import settings
 from teams.models import Player
-from teams.serializers import PlayerSerializer, PlayerDetailSerializer
+from teams.serializers import PlayerSerializer, PlayerDetailSerializer, PlayerCreateSerializer
 
 
 def hello(request):
@@ -66,22 +66,21 @@ class PlayerCreateView(CreateView):
     fields = ['slug', 'nickname', 'status', 'team']
 
     def post(self, request):
-        player_data = json.loads(request.body)
-
-        player = Player.objects.create(
-            #  player_id=player_data['player_id'],
-            slug=player_data['slug'],
-            nickname=player_data['nickname'],
-            status=player_data['status'],
-            team=player_data['team']
-        )
-
-        player.save()
-        return JsonResponse({
-            'id': player.id,
-            'nickname': player.nickname
-        }, safe=False)
-
+        player_data = PlayerCreateSerializer(data=json.loads(request.body))
+        if player_data.is_valid():
+            player_data.save()
+        else:
+            return JsonResponse(player_data.errors)
+        # player = Player.objects.create(
+        #     #  player_id=player_data['player_id'],
+        #     slug=player_data['slug'],
+        #     nickname=player_data['nickname'],
+        #     status=player_data['status'],
+        #     team=player_data['team']
+        # )
+        #
+        # player.save()
+        return JsonResponse(player_data.data)
 
 @method_decorator(csrf_exempt, name='dispatch')
 class PlayerUpdateView(UpdateView):
