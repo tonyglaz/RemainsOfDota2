@@ -3,6 +3,12 @@ from rest_framework import serializers
 from teams.models import Player, Team
 
 
+class TeamSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Team
+        fields = "__all__"
+
+
 class PlayerSerializer(serializers.ModelSerializer):
     team = serializers.SlugRelatedField(
         read_only=True,
