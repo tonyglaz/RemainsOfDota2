@@ -1,9 +1,5 @@
-import json
-
-from django.http import HttpResponse, JsonResponse
-from django.utils.decorators import method_decorator
-from django.views.decorators.csrf import csrf_exempt
-from django.views.generic import UpdateView, DeleteView
+from django.db.models import Q
+from django.http import HttpResponse
 from rest_framework.generics import ListAPIView, RetrieveAPIView, CreateAPIView, UpdateAPIView, DestroyAPIView
 from rest_framework.viewsets import ModelViewSet
 
@@ -21,10 +17,26 @@ class TeamViewSet(ModelViewSet):
     serializer_class = TeamSerializer
 
 
-
-class PlayerView(ListAPIView):
+class PlayerListView(ListAPIView):
     queryset = Player.objects.all()
     serializer_class = PlayerSerializer
+
+    def get(self, request, *args, **kwargs):
+        player_nickname = request.GET.get('nickname', None)
+        if player_nickname:
+            self.queryset = self.queryset.filter(
+                nickname__icontains=player_nickname
+            )
+        team_names = request.GET.getlist('team', None)
+        teams_q = None
+        for team in team_names:
+            if teams_q is None:
+                teams_q = Q(team__name__icontains=team)
+            else:
+                teams_q |= Q(team__name__icontains=team)
+        if teams_q:
+            self.queryset = self.queryset.filter(teams_q)
+        return super().get(request, *args, **kwargs)
 
 
 class PlayerDetailView(RetrieveAPIView):

@@ -4,7 +4,7 @@ from rest_framework import routers
 import teams.views as views
 
 urlpatterns = [
-    path('', views.PlayerView.as_view()),
+    path('', views.PlayerListView.as_view()),
     path('<int:pk>/', views.PlayerDetailView.as_view()),
     path('create/', views.PlayerCreateView.as_view()),
     path('<int:pk>/update/', views.PlayerUpdateView.as_view()),
