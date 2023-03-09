@@ -57,3 +57,5 @@ class PlayerUpdateView(UpdateAPIView):
 class PlayerDeleteView(DestroyAPIView):
     queryset = Player.objects.all()
     serializer_class = PlayerDestroySerializer
+
+
